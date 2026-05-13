@@ -1,0 +1,28 @@
+name: Build AutoKaaj APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install Buildozer and Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y libffi-dev perl build-essential setup-tools zlib1g-dev libssl-dev libncurses5-dev libgdbm-dev libnss3-dev libsqlite3-dev libreadline-dev libbz2-dev unzip
+          pip install --user --upgrade buildozer
+      - name: Unzip Project
+        run: unzip AutoKaaj_WealthOS_Colab.zip -d .
+      - name: Build APK
+        run: |
+          # আপনার প্যাকেজ com.autokaaj.wealthos এবং UPI 7557072451@slc এখানে বিল্ড হবে
+          cd AutoKaaj_Native_App && buildozer android debug
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: AutoKaaj-APK
+          path: AutoKaaj_Native_App/bin/*.apk
+
